@@ -43,6 +43,6 @@ This script was inspired by Sitecore-PowerShell-Installer's script: https://gith
 ## Generate a new configuration file from Sitecore excel file
 - Use the XmlSchema.xml file in Excel to generate the xml configuration file used by the script. 
 - This is done using Excel, via Developer tab (enable it first if needed) -> XML -> Export. 
-- You need to map the columns with the xml mappings first. Use Source on that same XML area, XML-Mappings-> Add and add the schema file. 
+- You need to map the columns with the xml mappings first. Use Source on that same XML area, XML-Mappings-> Add and add the schema file. Select the root node when asked. 
 - Then for each mapping you do right click, 'Map Element' and select a cell in the column to be used. Do that for all, then you can export. 
 - More information here: https://support.office.com/en-us/article/Export-XML-data-from-Excel-2016-c3cd6ade-7845-4b75-ba2e-fb9daad0567d

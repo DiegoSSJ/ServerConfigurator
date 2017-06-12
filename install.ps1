@@ -16,7 +16,7 @@
 .PARAMETER ignoreWebsitePrefix
     Don't use the website folder in the path, as specified in the Sitecore excel. Use this is your Website root has some other name and you are already including it in the path parameter.
 .EXAMPLE
-    C:\PS> install.ps1 -path C:\inetpub\wwwroot\Sitecore -serverType CMProcessing -solr 0 -check 0 -version 8.1
+    C:\PS> install.ps1 -path C:\inetpub\wwwroot\Sitecore -serverType CMProcessing -solr 0 -check 0 -version 8.2-rev-161221
 .NOTES
     Author: Alessandro Nivuori
     Contributor: Diego Saavedra San Juan
@@ -30,7 +30,7 @@ param(
   [Parameter(Mandatory=$true)]
   [string]$serverType, # The role for the Sitecore instance. Must be one of "ContentDelivery", "ContentManagement", "Processing", "CMProcessing" or "Reporting"
   [Parameter(Mandatory=$true)]
-  [string]$version="8.1",
+  [string]$version,
   [Parameter(Mandatory=$false)]
   [bool]$solr=$false, # Use Solr instead of Lucene as search provider for the instance
   [Parameter(Mandatory=$false)]
