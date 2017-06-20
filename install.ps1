@@ -32,7 +32,7 @@ param(
   [Parameter(Mandatory=$true)]
   [string]$version,
   [Parameter(Mandatory=$false)]
-  [bool]$solr=$false, # Use Solr instead of Lucene as search provider for the instance
+  [string]$searchProviderUsed="lucene", # Specify search provider to use. One of: Lucene, Solr or Azure
   [Parameter(Mandatory=$false)]
   [bool]$check=$false, # Check that the instance configuration matches the role desired
   [Parameter(Mandatory=$false)]
@@ -43,6 +43,7 @@ $scriptDir = Split-Path (Resolve-Path $myInvocation.MyCommand.Path)
 $configSettings = $null
 # Assume there is no host console available until we can read the config file.
 $hostScreenAvailable = $FALSE
+$searchProvidersStrings = "Lucene is used", "Solr is used", "Azure is used"
 
 
 
@@ -192,11 +193,11 @@ function Set-Config-File([string]$file)
 
 function Set-Config-File-Using-SearchProvider([string]$file, [string]$searchProviderUsed)
 {
-	if (!$config.SearchProviderUsed.equals($searchProviderUsed))
+	if ($config.SearchProviderUsed.equals($searchProviderUsed))
 	{
 		Set-Config-File $file
 	}
-	if ($config.SearchProviderUsed.equals($searchProviderUsed))
+	if (!$config.SearchProviderUsed.equals($searchProviderUsed))
 	{
 		Disable-File $file
 	}
@@ -223,18 +224,24 @@ function Configure-Server([string]$path, $serverType)
         }
 		$file = $path+"\"+$config.FilePath+"\"+$config.ConfigFileName
 		$serverConfig = ($config | Select -ExpandProperty $serverType)
-		if ([bool]($config.SearchProviderUsed))
-		{
-		
-			if (![bool]($solr))
+		if ([bool]($config.SearchProviderUsed) -and ( -not $config.SearchProviderUsed.equals("Base")))
+		{        	
+			if ($searchProviderUsed.ToLower() -match "solr")
 			{
-				Set-Config-File-Using-SearchProvider $file "Solr is used"
-				
+				Set-Config-File-Using-SearchProvider $file $searchProvidersStrings[1]				
 			}
-			if ([bool]($solr))
+			elseif ($searchProviderUsed.ToLower() -match "lucene")
 			{
-				Set-Config-File-Using-SearchProvider $file "Lucene is used"
+				Set-Config-File-Using-SearchProvider $file $searchProvidersStrings[0]
 			}
+            elseif ($searchProviderUsed.ToLower() -match "azure")
+            {
+                Set-Config-File-Using-SearchProvider $file $searchProvidersStrings[2]
+            }
+            else
+            {
+                Write-Error "Wrong search provider parameter: $searchProviderUsed"
+            }
 		}
 		else
 		{
